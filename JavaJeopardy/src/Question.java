@@ -39,7 +39,8 @@ public class Question {
             Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/SportsTrivia", "postgres", "HardcorE14");
 
             // Prepare SQL statement
-            String sql = "SELECT question, answer FROM questions WHERE difficulty_id = ?";
+            //String sql = "SELECT question, answer FROM questions WHERE difficulty_id = ?";
+            String sql = "SELECT questions.answer, questions.question, difficulty.difficulty_type FROM questions INNER JOIN difficulty ON questions.difficulty_id = difficulty.Id where difficulty_id = ?";
             // Easy Statement
             PreparedStatement easyStatement = connection.prepareStatement(sql);
             easyStatement.setInt(1, 1);
@@ -53,14 +54,15 @@ public class Question {
             // Execute query and retrieve results
             ResultSet resultSetEasy = easyStatement.executeQuery();
             while (resultSetEasy.next()) {
-                String question = resultSetEasy.getString("question");
+
+                String question = String.format("%s (%s)",resultSetEasy.getString("question"), resultSetEasy.getString("difficulty_type"));
                 String answer = resultSetEasy.getString("answer");
                 easyQuest.put(question, answer);
 
             }
             ResultSet resultSetMed = medStatement.executeQuery();
             while (resultSetMed.next()) {
-                String question = resultSetMed.getString("question");
+                String question = String.format("%s (%s)",resultSetMed.getString("question"), resultSetMed.getString("difficulty_type"));
                 String answer = resultSetMed.getString("answer");
                 medQuest.put(question, answer);
 
@@ -68,7 +70,7 @@ public class Question {
             }
             ResultSet resultSetHard = hardStatement.executeQuery();
             while (resultSetHard.next()) {
-                String question = resultSetHard.getString("question");
+                String question = String.format("%s (%s)",resultSetHard.getString("question"), resultSetHard.getString("difficulty_type"));
                 String answer = resultSetHard.getString("answer");
                 hardQuest.put(question, answer);
 
